@@ -677,7 +677,130 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
         </FoldCard>;
     }
 
+    // ... 在 renderGlobalRaceDistanceDiffGraph 方法之后 ...
 
+    renderGlobalRaceSpeedGraph() {
+        const series: Record<number, LineSeriesOption> = _.mapValues(this.displayNames(this.props.raceHorseInfo, this.props.raceData), name => {
+            return {
+                name: name,
+                data: [],
+                type: 'line',
+                smooth: true,
+                symbol: 'none', // 不显示数据点图标，使线条更平滑
+            } as LineSeriesOption;
+        });
+
+        this.props.raceData.frame.forEach(frame => {
+            const time = frame.time!;
+
+            // 依然计算 Base Distance 用于 X 轴 (如果选择了 Distance 模式)
+            const minDistance = _.min(frame.horseFrame.map(horseFrame => horseFrame.distance!))!;
+            const maxDistance = _.max(frame.horseFrame.map(horseFrame => horseFrame.distance!))!;
+            const baseDistance = (minDistance + maxDistance) / 2;
+
+            frame.horseFrame.forEach((horseFrame, frameOrder) => {
+                series[frameOrder].data!.push([
+                    this.state.diffGraphUseDistanceAsXAxis ? baseDistance : time,
+                    horseFrame.speed! / 100, // 这里直接使用绝对速度，不做 diff
+                ]);
+            });
+        });
+
+        const options: ECOption = {
+            xAxis: {
+                name: this.state.diffGraphUseDistanceAsXAxis ? "Base Distance" : "Time",
+                nameLocation: "middle",
+                type: "value",
+                min: "dataMin",
+                max: "dataMax",
+            },
+            yAxis: {
+                type: "value",
+                name: "Speed",
+                scale: true, // 设置为 true 可以让 Y 轴自适应数据的最小值和最大值，而不是强制从 0 开始
+            },
+            legend: { show: true, type: "scroll" },
+            series: _.values(series),
+            tooltip: {
+                trigger: 'axis',
+                valueFormatter: (value) => (value as number).toFixed(2), // 格式化提示框中的数值
+            },
+            dataZoom: {
+                type: 'slider',
+            },
+        };
+
+        return <FoldCard header="Absolute Speed Graph">
+            <Form.Switch
+                checked={this.state.diffGraphUseDistanceAsXAxis}
+                onChange={(e) => this.setState({ diffGraphUseDistanceAsXAxis: e.target.checked })}
+                id="abs-speed-graph-use-distance-as-x-axis"
+                label="Use Base Distance as X Axis" />
+            <EChartsReactCore echarts={echarts} option={options} style={{ height: '800px' }} />
+        </FoldCard>;
+    }
+    renderGlobalRaceHpGraph() {
+        const series: Record<number, LineSeriesOption> = _.mapValues(this.displayNames(this.props.raceHorseInfo, this.props.raceData), name => {
+            return {
+                name: name,
+                data: [],
+                type: 'line',
+                smooth: true,
+                symbol: 'none',
+            } as LineSeriesOption;
+        });
+
+        this.props.raceData.frame.forEach(frame => {
+            const time = frame.time!;
+
+            // 计算 Base Distance 用于 X 轴联动
+            const minDistance = _.min(frame.horseFrame.map(horseFrame => horseFrame.distance!))!;
+            const maxDistance = _.max(frame.horseFrame.map(horseFrame => horseFrame.distance!))!;
+            const baseDistance = (minDistance + maxDistance) / 2;
+
+            frame.horseFrame.forEach((horseFrame, frameOrder) => {
+                series[frameOrder].data!.push([
+                    this.state.diffGraphUseDistanceAsXAxis ? baseDistance : time,
+                    horseFrame.hp!, // 这里直接使用绝对 HP
+                ]);
+            });
+        });
+
+        const options: ECOption = {
+            xAxis: {
+                name: this.state.diffGraphUseDistanceAsXAxis ? "Base Distance" : "Time",
+                nameLocation: "middle",
+                type: "value",
+                min: "dataMin",
+                max: "dataMax",
+            },
+            yAxis: {
+                type: "value",
+                name: "HP",
+                // 这里不设置 scale: true，因为体力通常需要看到从最大值下降到接近 0 的完整过程，
+                // 强制 Y 轴从 0 开始会更直观地显示剩余体力的比例。
+            },
+            legend: { show: true, type: "scroll" },
+            series: _.values(series),
+            tooltip: {
+                trigger: 'axis',
+                // HP 通常是整数或较大的数值，保留0位小数即可
+                valueFormatter: (value) => (value as number).toFixed(0),
+            },
+            dataZoom: {
+                type: 'slider',
+            },
+        };
+
+        return <FoldCard header="Absolute HP Graph">
+            <Form.Switch
+                checked={this.state.diffGraphUseDistanceAsXAxis}
+                onChange={(e) => this.setState({ diffGraphUseDistanceAsXAxis: e.target.checked })}
+                id="abs-hp-graph-use-distance-as-x-axis"
+                label="Use Base Distance as X Axis" />
+            <EChartsReactCore echarts={echarts} option={options} style={{ height: '400px' }} />
+        </FoldCard>;
+    }
     render() {
         return <div>
             {(this.props.raceData.header!.version! > supportedRaceDataVersion) &&
@@ -687,6 +810,8 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 </Alert>}
             {this.renderCharaList()}
             {this.renderGlobalRaceDistanceDiffGraph()}
+            {this.renderGlobalRaceSpeedGraph()}
+            {this.renderGlobalRaceHpGraph()}
             {this.renderOtherRaceEventsList()}
             <Form>
                 <Form.Group>

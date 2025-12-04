@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Alert, Container, Nav, Navbar, NavDropdown, Spinner} from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Alert, Container, Nav, Navbar, NavDropdown, Spinner } from "react-bootstrap";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.css';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-import {HashRouter, Link, Route, Switch} from "react-router-dom";
+import { HashRouter, Link, Route, Switch } from "react-router-dom";
 import './App.css';
 import UMDatabaseWrapper from './data/UMDatabaseWrapper';
 import CarrotJuicerPage from "./pages/CarrotJuicerPage";
@@ -21,14 +21,14 @@ export default function App() {
     }, []);
 
     if (!umdbLoaded) {
-        return <div><Spinner animation="border"/> Loading UMDatabase...</div>;
+        return <div><Spinner animation="border" /> Loading UMDatabase...</div>;
     }
 
     return <HashRouter>
         <Navbar bg="light" expand="lg">
             <Container>
                 <Navbar.Brand as={Link} to="/">Hakuraku</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
@@ -55,7 +55,7 @@ export default function App() {
                         <Nav.Item className="navbar-text">
                             DB ver. {UMDatabaseWrapper.umdb.version}
                         </Nav.Item>
-                        <Nav.Link href="https://github.com/SSHZ-ORG/hakuraku">Source Code</Nav.Link>
+                        <Nav.Link href="https://github.com/mikumifa/hakuraku">Source Code</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
@@ -64,28 +64,28 @@ export default function App() {
         <Container>
             <Switch>
                 <Route path="/succession">
-                    <SuccessionPage/>
+                    <SuccessionPage />
                 </Route>
                 <Route path="/successionrelations">
-                    <SuccessionRelationsPage/>
+                    <SuccessionRelationsPage />
                 </Route>
                 <Route path="/stories">
-                    <StoriesPage/>
+                    <StoriesPage />
                 </Route>
                 <Route path="/carrotjuicer">
-                    <CarrotJuicerPage/>
+                    <CarrotJuicerPage />
                 </Route>
                 <Route path="/racedata">
-                    <RaceDataPage/>
+                    <RaceDataPage />
                 </Route>
                 <Route path="/teamraceanalyzer">
-                    <TeamAnalyzerPage/>
+                    <TeamAnalyzerPage />
                 </Route>
                 <Route path="/roomraceanalyzer">
-                    <RoomRaceAnalyzerPage/>
+                    <RoomRaceAnalyzerPage />
                 </Route>
                 <Route path="/">
-                    <Home/>
+                    <Home />
                 </Route>
             </Switch>
         </Container>
