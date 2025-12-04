@@ -308,6 +308,20 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                     name: UMDatabaseWrapper.skillName(event.param[1]),
                     label: { show: true, position: 'insideStartBottom' },
                     lineStyle: { color: '#666' },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            backgroundColor: 'rgba(255,255,255,0.9)',
+                            padding: [3, 5],
+                            borderRadius: 3,
+                        },
+                        lineStyle: {
+                            width: 3,
+                            color: '#000'
+                        }
+                    }
                 } as MarkLine1DDataItemOption;
             });
 
@@ -318,6 +332,20 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                     name: `${UMDatabaseWrapper.skillName(event.param[1])} by ${displayNames[event.param[0]]}`,
                     label: { show: true, position: 'insideStartBottom' },
                     lineStyle: { color: 'rgba(255, 0, 0, 0.6)' },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            backgroundColor: 'rgba(255,255,255,0.9)',
+                            padding: [3, 5],
+                            borderRadius: 3,
+                        },
+                        lineStyle: {
+                            width: 3,
+                            color: '#000'
+                        }
+                    }
                 } as MarkLine1DDataItemOption;
             });
 
@@ -328,6 +356,20 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                     name: name,
                     label: { show: true, position: 'insideStartBottom' },
                     lineStyle: { color: 'rgba(0, 255, 0, 0.6)' },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            backgroundColor: 'rgba(255,255,255,0.9)',
+                            padding: [3, 5],
+                            borderRadius: 3,
+                        },
+                        lineStyle: {
+                            width: 3,
+                            color: '#000'
+                        }
+                    }   
                 } as MarkLine1DDataItemOption;
             }));
 
