@@ -369,7 +369,7 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                             width: 3,
                             color: '#000'
                         }
-                    }   
+                    }
                 } as MarkLine1DDataItemOption;
             }));
 
