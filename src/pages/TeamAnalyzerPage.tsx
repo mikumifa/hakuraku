@@ -1,16 +1,16 @@
 import _ from "lodash";
 import React from "react";
-import {Button, Col, Form, InputGroup, Row, Table} from "react-bootstrap";
-import BootstrapTable, {ColumnDescription, ColumnFormatter, ExpandRowProps} from 'react-bootstrap-table-next';
-import {Typeahead} from "react-bootstrap-typeahead";
+import { Button, Col, Form, InputGroup, Row, Table } from "react-bootstrap";
+import BootstrapTable, { ColumnDescription, ColumnFormatter, ExpandRowProps } from 'react-bootstrap-table-next';
+import { Typeahead } from "react-bootstrap-typeahead";
 import CardNamePresenter from "../components/CardNamePresenter";
 import CharaProperLabels from "../components/CharaProperLabels";
 import CopyButton from "../components/CopyButton";
 import FilesSelector from "../components/FilesSelector";
-import {Chara, TeamStadiumScoreBonus} from "../data/data_pb";
-import {RaceSimulateHorseResultData_RunningStyle} from "../data/race_data_pb";
-import {CharaRaceData, parse, TeamRaceGroupData} from "../data/TeamRaceParser";
-import {TrainedCharaData} from "../data/TrainedCharaData";
+import { Chara, TeamStadiumScoreBonus } from "../data/data_pb";
+import { RaceSimulateHorseResultData_RunningStyle } from "../data/race_data_pb";
+import { CharaRaceData, parse, TeamRaceGroupData } from "../data/TeamRaceParser";
+import { TrainedCharaData } from "../data/TrainedCharaData";
 import * as UMDatabaseUtils from "../data/UMDatabaseUtils";
 import UMDatabaseWrapper from "../data/UMDatabaseWrapper";
 
@@ -61,7 +61,7 @@ type AggregatedCharaData = {
 const floatFormatter: ColumnFormatter<AggregatedCharaData, {}, number> = (cell) => cell.toFixed(2);
 const floatFormatter6: ColumnFormatter<AggregatedCharaData, {}, number> = (cell) => cell.toFixed(6);
 
-const countFormatter: ColumnFormatter<AggregatedCharaData, {}, number> = (cell, row) => <>{cell}<br/>({(cell / row.raceCount * 100).toFixed(2)}%)</>;
+const countFormatter: ColumnFormatter<AggregatedCharaData, {}, number> = (cell, row) => <>{cell}<br />({(cell / row.raceCount * 100).toFixed(2)}%)</>;
 
 
 const columns: ColumnDescription<AggregatedCharaData>[] = [
@@ -69,14 +69,14 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         dataField: 'copy',
         isDummyField: true,
         text: '',
-        formatter: (cell, row) => <CopyButton content={JSON.stringify(row.trainedChara.rawData)}/>,
+        formatter: (cell, row) => <CopyButton content={JSON.stringify(row.trainedChara.rawData)} />,
     },
 
     {
         dataField: 'trainedCharaId',
         text: 'ID',
         sort: true,
-        formatter: (cell, row) => <>{row.trainedChara.viewerId}<br/>TCID: {cell}</>,
+        formatter: (cell, row) => <>{row.trainedChara.viewerId}<br />TCID: {cell}</>,
     },
 
     {
@@ -85,7 +85,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: (cell: keyof typeof UMDatabaseUtils.teamRaceDistanceLabels, row) => <>
             {UMDatabaseUtils.teamRaceDistanceLabels[cell]}
-            <br/>{UMDatabaseUtils.runningStyleLabels[row.runningStyle]}
+            <br />{UMDatabaseUtils.runningStyleLabels[row.runningStyle]}
         </>,
     },
     {
@@ -93,7 +93,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         text: '',
         formatter: (chara: Chara | undefined, row) => chara ? <>
             {chara.id} - {chara.name}
-            <br/>({chara.castName}){' '}<CardNamePresenter cardId={row.trainedChara.cardId}/>
+            <br />({chara.castName}){' '}<CardNamePresenter cardId={row.trainedChara.cardId} />
         </> : 'Unknown Chara',
     },
 
@@ -103,14 +103,14 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         text: '評価点',
         formatter: (cell, row) => <>
             {row.trainedChara.rankScore}
-            <br/>
+            <br />
             {UMDatabaseUtils.charaProperLabels[row.distanceType === 5 ? row.trainedChara.properGroundDirt : row.trainedChara.properGroundTurf]}
             {' '}{UMDatabaseUtils.charaProperLabels[row.trainedChara.properDistances[row.distanceType === 5 ? 2 : row.distanceType]]}
             {' '}{UMDatabaseUtils.charaProperLabels[row.trainedChara.properRunningStyles[row.runningStyle]]}
         </>,
     },
 
-    {dataField: 'raceCount', text: 'N'},
+    { dataField: 'raceCount', text: 'N' },
     {
         dataField: 'finishOrders',
         text: '',
@@ -123,7 +123,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: floatFormatter,
         // @ts-ignore
-        headerAttrs: {title: '(Estimated) average score, including selected bonuses'},
+        headerAttrs: { title: '(Estimated) average score, including selected bonuses' },
     },
     {
         dataField: 'sdScore',
@@ -131,7 +131,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: floatFormatter,
         // @ts-ignore
-        headerAttrs: {title: '(Estimated) standard deviation of raw score, excluding bonuses'},
+        headerAttrs: { title: '(Estimated) standard deviation of raw score, excluding bonuses' },
     },
     {
         dataField: 'avgRawScoreDevRatio',
@@ -139,7 +139,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: cell => `${(cell * 100).toFixed(2)}%`,
         // @ts-ignore
-        headerAttrs: {title: 'Average of deviation rate of raw score from all charas\' score in each group of races'},
+        headerAttrs: { title: 'Average of deviation rate of raw score from all charas\' score in each group of races' },
     },
 
     {
@@ -148,7 +148,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: floatFormatter,
         // @ts-ignore
-        headerAttrs: {title: 'Average HP remaining at the last frame, including 0'},
+        headerAttrs: { title: 'Average HP remaining at the last frame, including 0' },
     },
     {
         dataField: 'zeroLastHpCount',
@@ -156,7 +156,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: countFormatter,
         // @ts-ignore
-        headerAttrs: {title: 'Number of races where HP is 0 at the last frame'},
+        headerAttrs: { title: 'Number of races where HP is 0 at the last frame' },
     },
     {
         dataField: 'avgZeroHpFrameCount',
@@ -164,7 +164,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: floatFormatter6,
         // @ts-ignore
-        headerAttrs: {title: 'Average number of frames before goal-in where HP is 0'},
+        headerAttrs: { title: 'Average number of frames before goal-in where HP is 0' },
     },
 
     {
@@ -173,7 +173,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: floatFormatter6,
         // @ts-ignore
-        headerAttrs: {title: 'Average time of 出遅れ, in seconds'},
+        headerAttrs: { title: 'Average time of 出遅れ, in seconds' },
     },
 
     {
@@ -182,7 +182,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: floatFormatter6,
         // @ts-ignore
-        headerAttrs: {title: 'Average number of frames of 掛かり'},
+        headerAttrs: { title: 'Average number of frames of 掛かり' },
     },
 
     {
@@ -191,7 +191,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: floatFormatter6,
         // @ts-ignore
-        headerAttrs: {title: 'Average percentage of last spurt distance of race distance, excluding races where no last spurt was attempted'},
+        headerAttrs: { title: 'Average percentage of last spurt distance of race distance, excluding races where no last spurt was attempted' },
     },
     {
         dataField: 'noLastSpurtCount',
@@ -199,7 +199,7 @@ const columns: ColumnDescription<AggregatedCharaData>[] = [
         sort: true,
         formatter: countFormatter,
         // @ts-ignore
-        headerAttrs: {title: 'Number of races where no last spurt was attempted'},
+        headerAttrs: { title: 'Number of races where no last spurt was attempted' },
     },
 ];
 
@@ -208,41 +208,41 @@ const expandRow: ExpandRowProps<AggregatedCharaData> = {
         <div className="d-flex flex-row align-items-start">
             <Table size="small" className="w-auto m-2">
                 <tbody>
-                {row.trainedChara.skills.map(cs =>
-                    <tr>
-                        <td>{UMDatabaseWrapper.skillNameWithId(cs.skillId)}</td>
-                        <td>Lv {cs.level}</td>
-                        <td>{row.skillActivationCount[cs.skillId] ?? 0}</td>
-                        <td>({(100 * (row.skillActivationCount[cs.skillId] ?? 0) / row.raceCount).toFixed(2)}%)</td>
-                    </tr>,
-                )}
+                    {row.trainedChara.skills.map(cs =>
+                        <tr>
+                            <td>{UMDatabaseWrapper.skillNameWithId(cs.skillId)}</td>
+                            <td>Lv {cs.level}</td>
+                            <td>{row.skillActivationCount[cs.skillId] ?? 0}</td>
+                            <td>({(100 * (row.skillActivationCount[cs.skillId] ?? 0) / row.raceCount).toFixed(2)}%)</td>
+                        </tr>,
+                    )}
                 </tbody>
             </Table>
             <Table size="small" className="w-auto m-2">
                 <tbody>
-                <tr>
-                    <td>スピ</td>
-                    <td>{row.trainedChara.speed}</td>
-                </tr>
-                <tr>
-                    <td>スタ</td>
-                    <td>{row.trainedChara.stamina}</td>
-                </tr>
-                <tr>
-                    <td>パワ</td>
-                    <td>{row.trainedChara.pow}</td>
-                </tr>
-                <tr>
-                    <td>根性</td>
-                    <td>{row.trainedChara.guts}</td>
-                </tr>
-                <tr>
-                    <td>賢さ</td>
-                    <td>{row.trainedChara.wiz}</td>
-                </tr>
+                    <tr>
+                        <td>スピ</td>
+                        <td>{row.trainedChara.speed}</td>
+                    </tr>
+                    <tr>
+                        <td>スタ</td>
+                        <td>{row.trainedChara.stamina}</td>
+                    </tr>
+                    <tr>
+                        <td>パワ</td>
+                        <td>{row.trainedChara.pow}</td>
+                    </tr>
+                    <tr>
+                        <td>根性</td>
+                        <td>{row.trainedChara.guts}</td>
+                    </tr>
+                    <tr>
+                        <td>賢さ</td>
+                        <td>{row.trainedChara.wiz}</td>
+                    </tr>
                 </tbody>
             </Table>
-            <CharaProperLabels chara={row.trainedChara}/>
+            <CharaProperLabels chara={row.trainedChara} />
         </div>
     ),
     showExpandColumn: true,
@@ -361,12 +361,12 @@ export default class TeamAnalyzerPage extends React.Component<{}, TeamAnalyzerPa
             <Row>
                 <Col>
                     <FilesSelector onFilesChange={files => this.onSelectedFilesChange(files)}
-                                   instructions={<>
-                                       Select multiple team stadium race packets to analyze performance of team members.
-                                       Packets that are not team stadium races will be ignored. You may find <a
-                                       href="https://gist.github.com/CNA-Bld/5b475cb46c7d407fa69a528e448972ab">
-                                       this script</a> useful.
-                                   </>}/>
+                        instructions={<>
+                            Select multiple team stadium race packets to analyze performance of team members.
+                            Packets that are not team stadium races will be ignored. You may find <a
+                                href="https://gist.github.com/CNA-Bld/5b475cb46c7d407fa69a528e448972ab">
+                                this script</a> useful.
+                        </>} />
                 </Col>
             </Row>
 
@@ -380,17 +380,17 @@ export default class TeamAnalyzerPage extends React.Component<{}, TeamAnalyzerPa
                                 </InputGroup.Text>
                             </InputGroup.Prepend>
                             <Typeahead labelKey={(b) => `${b.id} - ${b.name}`}
-                                       multiple
-                                       options={UMDatabaseWrapper.umdb.teamStadiumScoreBonus}
-                                       selected={this.state.selectedBonuses}
-                                       onChange={s => this.setState({selectedBonuses: s})}/>
+                                multiple
+                                options={UMDatabaseWrapper.umdb.teamStadiumScoreBonus}
+                                selected={this.state.selectedBonuses}
+                                onChange={s => this.setState({ selectedBonuses: s })} />
                             <InputGroup.Append>
                                 <Button variant="outline-secondary"
-                                        onClick={() => this.setState({selectedBonuses: UMDatabaseWrapper.umdb.teamStadiumScoreBonus})}>
+                                    onClick={() => this.setState({ selectedBonuses: UMDatabaseWrapper.umdb.teamStadiumScoreBonus })}>
                                     All
                                 </Button>{' '}
                                 <Button variant="outline-secondary"
-                                        onClick={() => this.setState({selectedBonuses: []})}>
+                                    onClick={() => this.setState({ selectedBonuses: [] })}>
                                     No
                                 </Button>
                             </InputGroup.Append>
@@ -402,12 +402,12 @@ export default class TeamAnalyzerPage extends React.Component<{}, TeamAnalyzerPa
             <Row>
                 <Col>
                     <BootstrapTable bootstrap4 condensed hover
-                                    classes="responsive-bootstrap-table"
-                                    wrapperClasses="table-responsive"
-                                    data={this.patchedAggregations()} columns={columns} keyField="key"
-                                    expandRow={expandRow}
-                                    rowClasses={r => this.rowClasses(r)}
-                                    noDataIndication={this.state.loading ? 'Loading...' : 'No data loaded'}/>
+                        classes="responsive-bootstrap-table"
+                        wrapperClasses="table-responsive"
+                        data={this.patchedAggregations()} columns={columns} keyField="key"
+                        expandRow={expandRow}
+                        rowClasses={r => this.rowClasses(r)}
+                        noDataIndication={this.state.loading ? 'Loading...' : 'No data loaded'} />
                 </Col>
             </Row>
         </>;

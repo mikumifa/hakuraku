@@ -1,8 +1,8 @@
 import React from "react";
-import {Button, Col, Form} from "react-bootstrap";
+import { Button, Col, Form } from "react-bootstrap";
 import RaceDataPresenter from "../components/RaceDataPresenter";
-import {RaceSimulateData} from "../data/race_data_pb";
-import {deserializeFromBase64} from "../data/RaceDataParser";
+import { RaceSimulateData } from "../data/race_data_pb";
+import { deserializeFromBase64 } from "../data/RaceDataParser";
 
 type RaceDataPageState = {
     raceHorseInfoInput: string,
@@ -26,11 +26,11 @@ export default class RaceDataPage extends React.Component<{}, RaceDataPageState>
     }
 
     parse() {
-        this.setState({parsedRaceData: deserializeFromBase64(this.state.raceScenarioInput.trim())});
+        this.setState({ parsedRaceData: deserializeFromBase64(this.state.raceScenarioInput.trim()) });
         try {
-            this.setState({parsedHorseInfo: JSON.parse(this.state.raceHorseInfoInput)});
+            this.setState({ parsedHorseInfo: JSON.parse(this.state.raceHorseInfoInput) });
         } catch (e) {
-            this.setState({parsedHorseInfo: undefined});
+            this.setState({ parsedHorseInfo: undefined });
         }
     }
 
@@ -45,14 +45,14 @@ export default class RaceDataPage extends React.Component<{}, RaceDataPageState>
                             packet), or <code>race_start_params_array.race_horse_data_array</code> (for team race)
                         </Form.Label>
                         <Form.Control as="textarea" rows={3}
-                                      onChange={e => this.setState({raceHorseInfoInput: e.target.value})}/>
+                            onChange={e => this.setState({ raceHorseInfoInput: e.target.value })} />
                     </Form.Group>
                 </Form.Row>
                 <Form.Row>
                     <Form.Group as={Col}>
                         <Form.Label>[Required] <code>race_scenario</code></Form.Label>
                         <Form.Control as="textarea" rows={3}
-                                      onChange={e => this.setState({raceScenarioInput: e.target.value})}/>
+                            onChange={e => this.setState({ raceScenarioInput: e.target.value })} />
                     </Form.Group>
                 </Form.Row>
                 <Button variant="primary" onClick={() => this.parse()}>
@@ -60,12 +60,12 @@ export default class RaceDataPage extends React.Component<{}, RaceDataPageState>
                 </Button>
             </Form>
 
-            <hr/>
+            <hr />
 
             {this.state.parsedRaceData &&
                 <RaceDataPresenter
                     raceHorseInfo={this.state.parsedHorseInfo}
-                    raceData={this.state.parsedRaceData}/>}
+                    raceData={this.state.parsedRaceData} />}
         </>;
     }
 

@@ -1,14 +1,14 @@
 import _ from "lodash";
 import React from "react";
-import {Alert, Col, Form, Row, Table} from "react-bootstrap";
-import BootstrapTable, {ColumnDescription, ExpandRowProps} from "react-bootstrap-table-next";
+import { Alert, Col, Form, Row, Table } from "react-bootstrap";
+import BootstrapTable, { ColumnDescription, ExpandRowProps } from "react-bootstrap-table-next";
 import CardNamePresenter from "../components/CardNamePresenter";
 import CharaProperLabels from "../components/CharaProperLabels";
 import CopyButton from "../components/CopyButton";
 import FilesSelector from "../components/FilesSelector";
-import {Chara, RaceInstance_GroundType} from "../data/data_pb";
-import {parse, RoomRaceCharaData, RoomRaceData} from "../data/RoomRaceParser";
-import {TrainedCharaData} from "../data/TrainedCharaData";
+import { Chara, RaceInstance_GroundType } from "../data/data_pb";
+import { parse, RoomRaceCharaData, RoomRaceData } from "../data/RoomRaceParser";
+import { TrainedCharaData } from "../data/TrainedCharaData";
 import * as UMDatabaseUtils from "../data/UMDatabaseUtils";
 import UMDatabaseWrapper from "../data/UMDatabaseWrapper";
 
@@ -60,7 +60,7 @@ const expandRow: ExpandRowProps<AggregatedCharaData> = {
         <div className="d-flex flex-row align-items-start">
             <Table size="small" className="w-auto m-2">
                 <tbody>
-                {row.trainedChara.skills.map(cs => {
+                    {row.trainedChara.skills.map(cs => {
                         const distances = (row.skillsActivationDistances[cs.skillId] ?? []).sort((a, b) => a - b);
                         return <tr>
                             <td>{UMDatabaseWrapper.skillNameWithId(cs.skillId)}</td>
@@ -70,10 +70,10 @@ const expandRow: ExpandRowProps<AggregatedCharaData> = {
                             <td>{distances.map(d => d.toFixed(2)).join(', ')}</td>
                         </tr>;
                     },
-                )}
+                    )}
                 </tbody>
             </Table>
-            <CharaProperLabels chara={row.trainedChara}/>
+            <CharaProperLabels chara={row.trainedChara} />
         </div>
     ),
     showExpandColumn: true,
@@ -100,7 +100,7 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
             dataField: 'copy',
             isDummyField: true,
             text: '',
-            formatter: (cell, row) => <CopyButton content={JSON.stringify(row.trainedChara.rawData)}/>,
+            formatter: (cell, row) => <CopyButton content={JSON.stringify(row.trainedChara.rawData)} />,
         },
 
         {
@@ -108,7 +108,7 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
             text: '',
             formatter: (chara: Chara | undefined, row) => chara ? <>
                 {chara.id} - {chara.name}
-                <br/>({chara.castName}){' '}<CardNamePresenter cardId={row.trainedChara.cardId}/>
+                <br />({chara.castName}){' '}<CardNamePresenter cardId={row.trainedChara.cardId} />
             </> : 'Unknown Chara',
         },
 
@@ -118,7 +118,7 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
             text: 'ト',
             formatter: (cell, row) => <>
                 {row.trainedChara.viewerName}
-                <br/>{row.trainedChara.viewerId} - {row.trainedChara.trainedCharaId}
+                <br />{row.trainedChara.viewerId} - {row.trainedChara.trainedCharaId}
             </>,
         },
 
@@ -133,7 +133,7 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
             text: 'Avg Time',
             formatter: (cell, row) => <>
                 {UMDatabaseUtils.formatTime(row.averageTime)}
-                <br/>{UMDatabaseUtils.formatTime(row.averageRawTime)}
+                <br />{UMDatabaseUtils.formatTime(row.averageRawTime)}
             </>,
         },
 
@@ -153,7 +153,7 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
                 }
                 return <>
                     {row.trainedChara.rankScore}
-                    <br/>
+                    <br />
                     {properGroundLabel}
                     {' '}{this.state.distanceType ? UMDatabaseUtils.charaProperLabels[row.trainedChara.properDistances[this.state.distanceType]] : '?'}
                 </>;
@@ -228,7 +228,7 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
                     }
 
                     const aggregations: AggregatedCharaData[] = _.map(_.groupBy(roomRaceDatas.map(d => d.charaDatas).flat(),
-                            c => `${c.trainedChara.viewerId}:${c.trainedChara.trainedCharaId}:${distanceType}:${groundType}`),
+                        c => `${c.trainedChara.viewerId}:${c.trainedChara.trainedCharaId}:${distanceType}:${groundType}`),
                         aggregate);
 
                     this.setState({
@@ -257,10 +257,10 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
             <Row>
                 <Col>
                     <FilesSelector onFilesChange={files => this.onSelectedFilesChange(files)}
-                                   instructions={<>
-                                       Select Room Match / Practice packets. It is your responsibility to ensure that
-                                       all packets are for similar races.
-                                   </>}/>
+                        instructions={<>
+                            Select Room Match / Practice packets. It is your responsibility to ensure that
+                            all packets are for similar races.
+                        </>} />
                 </Col>
             </Row>
 
@@ -268,9 +268,9 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
                 <Col>
                     <Form.Switch
                         checked={this.state.viewerOnly}
-                        onChange={(e) => this.setState({viewerOnly: e.target.checked})}
+                        onChange={(e) => this.setState({ viewerOnly: e.target.checked })}
                         id="viewer-only"
-                        label="Show only TrainedCharas of viewer"/>
+                        label="Show only TrainedCharas of viewer" />
                 </Col>
             </Row>
 
@@ -285,13 +285,13 @@ export default class RoomRaceAnalyzerPage extends React.Component<{}, RoomRaceAn
             <Row>
                 <Col>
                     <BootstrapTable bootstrap4 condensed hover
-                                    classes="responsive-bootstrap-table"
-                                    wrapperClasses="table-responsive"
-                                    data={this.state.aggregatedCharaDatas.filter(d => d.viewerIdAtLeastOneMatches || !this.state.viewerOnly)}
-                                    columns={this.aggregatedCharaDataColumns}
-                                    keyField="key"
-                                    expandRow={expandRow}
-                                    noDataIndication={this.state.loading ? 'Loading...' : 'No data loaded'}/>
+                        classes="responsive-bootstrap-table"
+                        wrapperClasses="table-responsive"
+                        data={this.state.aggregatedCharaDatas.filter(d => d.viewerIdAtLeastOneMatches || !this.state.viewerOnly)}
+                        columns={this.aggregatedCharaDataColumns}
+                        keyField="key"
+                        expandRow={expandRow}
+                        noDataIndication={this.state.loading ? 'Loading...' : 'No data loaded'} />
                 </Col>
             </Row>
         </>;

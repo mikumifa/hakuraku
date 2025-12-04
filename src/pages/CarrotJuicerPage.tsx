@@ -1,12 +1,12 @@
 // @ts-ignore
 import struct from "@aksel/structjs";
-import {JsonViewer} from "@textea/json-viewer";
+import { JsonViewer } from "@textea/json-viewer";
 import msgpack from "@ygoe/msgpack";
 import React from "react";
-import {Col, Form, ListGroup, ListGroupItem, Row} from "react-bootstrap";
+import { Col, Form, ListGroup, ListGroupItem, Row } from "react-bootstrap";
 import FilesSelector from "../components/FilesSelector";
 import RaceDataPresenter from "../components/RaceDataPresenter";
-import {deserializeFromBase64} from "../data/RaceDataParser";
+import { deserializeFromBase64 } from "../data/RaceDataParser";
 import * as UMDatabaseUtils from "../data/UMDatabaseUtils";
 import UMDatabaseWrapper from "../data/UMDatabaseWrapper";
 
@@ -46,7 +46,7 @@ export default class CarrotJuicerPage extends React.Component<{}, CarrotJuicerPa
         if (files.length === 0) {
             return;
         }
-        this.setState({selectedFiles: files});
+        this.setState({ selectedFiles: files });
     }
 
     skipRequestHeader(buffer: ArrayBuffer) {
@@ -55,12 +55,12 @@ export default class CarrotJuicerPage extends React.Component<{}, CarrotJuicerPa
     }
 
     onCurrentFileChange(file: File) {
-        this.setState({currentFile: file});
+        this.setState({ currentFile: file });
 
         file.arrayBuffer().then((content: ArrayBuffer) => {
             const bytesToUse = file.name.endsWith("Q.msgpack") ? this.skipRequestHeader(content) : content;
             try {
-                this.setState({currentFileContent: msgpack.deserialize(bytesToUse)});
+                this.setState({ currentFileContent: msgpack.deserialize(bytesToUse) });
             } catch (e) {
                 console.log("Failed to parse file!", file, e);
             }
@@ -73,7 +73,7 @@ export default class CarrotJuicerPage extends React.Component<{}, CarrotJuicerPa
                 <Form.Group>
                     <Form.Label>Team Race</Form.Label>
                     <Form.Control as="select" custom
-                                  onChange={(e) => this.setState({selectedTeamRace: e.target.value ? parseInt(e.target.value) : undefined})}>
+                        onChange={(e) => this.setState({ selectedTeamRace: e.target.value ? parseInt(e.target.value) : undefined })}>
                         <option value="">-</option>
                         {raceStartParamsArray.map((race: any, idx: number) => {
                             const distanceType: keyof typeof UMDatabaseUtils.teamRaceDistanceLabels = raceResultArray[idx]['distance_type'];
@@ -91,9 +91,9 @@ export default class CarrotJuicerPage extends React.Component<{}, CarrotJuicerPa
                     {teamRaceHeader(raceStartParamsArray[this.state.selectedTeamRace])}
                     <RaceDataPresenter
                         raceHorseInfo={raceStartParamsArray[this.state.selectedTeamRace]['race_horse_data_array']}
-                        raceData={deserializeFromBase64(raceResultArray[this.state.selectedTeamRace]['race_scenario'])}/>
+                        raceData={deserializeFromBase64(raceResultArray[this.state.selectedTeamRace]['race_scenario'])} />
                 </>}
-            <hr/>
+            <hr />
         </>;
     }
 
@@ -111,8 +111,8 @@ export default class CarrotJuicerPage extends React.Component<{}, CarrotJuicerPa
             return <>
                 <RaceDataPresenter
                     raceHorseInfo={data['race_start_info']['race_horse_data']}
-                    raceData={deserializeFromBase64(data['race_scenario'])}/>
-                <hr/>
+                    raceData={deserializeFromBase64(data['race_scenario'])} />
+                <hr />
             </>;
         } else if (data['race_start_params_array'] && data['race_result_array'] && data['race_start_params_array'].length === data['race_result_array'].length) {
             // Team race
@@ -125,24 +125,24 @@ export default class CarrotJuicerPage extends React.Component<{}, CarrotJuicerPa
             return <>
                 <RaceDataPresenter
                     raceHorseInfo={data['race_horse_data_array']}
-                    raceData={deserializeFromBase64(data['room_info']['race_scenario'])}/>
-                <hr/>
+                    raceData={deserializeFromBase64(data['room_info']['race_scenario'])} />
+                <hr />
             </>;
         } else if (data['race_scenario'] && data['race_horse_data_array']) {
             // Room match
             return <>
                 <RaceDataPresenter
                     raceHorseInfo={data['race_horse_data_array']}
-                    raceData={deserializeFromBase64(data['race_scenario'])}/>
-                <hr/>
+                    raceData={deserializeFromBase64(data['race_scenario'])} />
+                <hr />
             </>;
         } else if (data['race_result_info']) {
             // Practice race
             return <>
                 <RaceDataPresenter
                     raceHorseInfo={data['race_result_info']['race_horse_data_array']}
-                    raceData={deserializeFromBase64(data['race_result_info']['race_scenario'])}/>
-                <hr/>
+                    raceData={deserializeFromBase64(data['race_result_info']['race_scenario'])} />
+                <hr />
             </>;
         } else {
             return undefined;
@@ -154,22 +154,22 @@ export default class CarrotJuicerPage extends React.Component<{}, CarrotJuicerPa
             <Row>
                 <Col>
                     <FilesSelector onFilesChange={files => this.onSelectedFilesChange(files)}
-                                   instructions="Select a packet containing a single mode race, a group of team stadium races, a room race (Taurus cup etc.) or a room match to inspect and visualize them here."/>
+                        instructions="Select a packet containing a single mode race, a group of team stadium races, a room race (Taurus cup etc.) or a room match to inspect and visualize them here." />
                 </Col>
             </Row>
-            <Row style={{height: '90vh'}}>
-                <Col style={{maxHeight: '100%', overflowY: 'auto'}}>
+            <Row style={{ height: '90vh' }}>
+                <Col style={{ maxHeight: '100%', overflowY: 'auto' }}>
                     <ListGroup>
                         {this.state.selectedFiles.map(file =>
                             <ListGroupItem action onClick={() => this.onCurrentFileChange(file)}
-                                           active={file === this.state.currentFile}>
+                                active={file === this.state.currentFile}>
                                 {file.name}
                             </ListGroupItem>)}
                     </ListGroup>
                 </Col>
-                <Col xs="8" style={{maxHeight: '100%', overflowY: 'auto'}}>
+                <Col xs="8" style={{ maxHeight: '100%', overflowY: 'auto' }}>
                     {this.raceDataPresenter()}
-                    <JsonViewer value={this.state.currentFileContent} defaultInspectDepth={2}/>
+                    <JsonViewer value={this.state.currentFileContent} defaultInspectDepth={2} />
                 </Col>
             </Row>
         </>;

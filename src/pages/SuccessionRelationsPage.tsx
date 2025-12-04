@@ -1,38 +1,39 @@
 import _ from "lodash";
-import React, {useState} from "react";
-import {Form} from "react-bootstrap";
-import {Typeahead} from "react-bootstrap-typeahead";
+import React, { useState } from "react";
+import { Form } from "react-bootstrap";
+import { Typeahead } from "react-bootstrap-typeahead";
 import FoldCard from "../components/FoldCard";
 import SuccessionRelationChip from "../components/SuccessionRelationChip";
-import {Chara, SuccessionRelation} from "../data/data_pb";
+import { Chara, SuccessionRelation } from "../data/data_pb";
 import * as UMDatabaseUtils from "../data/UMDatabaseUtils";
 import UMDatabaseWrapper from "../data/UMDatabaseWrapper";
 
 const GROUP_TYPE_TAGS: Record<string, string> = {
     '1': '学年',
-    '2': '寮',
+    '2': '宿舍',
     '3': '同室',
-    '20': '同じ父',
-    '21': '同じ父の父・母の父',
-    '23': '母の父',
-    '25': 'G1 勝鞍',
-    '26': '性別・？',
-    '27': '生月日',
-    '28': '生年',
-    '29': '脚質適性',
-    '30': '距離適性',
-    '31': '馬場適性',
-    '32': '生月',
+    '20': '同父系',
+    '21': '父方祖父／母方祖父',
+    '23': '母方父系',
+    '25': 'G1 胜场',
+    '26': '性别・？',
+    '27': '出生日期',
+    '28': '出生年份',
+    '29': '跑法适性',
+    '30': '距离适性',
+    '31': '场地适性',
+    '32': '出生月份',
 };
+
 
 export default function SuccessionRelationsPage() {
     const [selectedCharas, setSelectedCharas] = useState<Chara[]>([]);
     const [showRelationId, setShowRelationId] = useState(false);
-    
+
     function renderRelationsGroups(relations: SuccessionRelation[], key: string) {
         return <FoldCard header={`Relations ${key}xx ${GROUP_TYPE_TAGS[key] ?? ''}`}>
             {UMDatabaseUtils.findSuccessionRelation(selectedCharas, relations)
-                .map(r => <><SuccessionRelationChip relation={r} showId={showRelationId}/>{' '}</>)}
+                .map(r => <><SuccessionRelationChip relation={r} showId={showRelationId} />{' '}</>)}
         </FoldCard>;
     }
 
@@ -48,7 +49,7 @@ export default function SuccessionRelationsPage() {
                 options={UMDatabaseWrapper.umdb.chara}
                 selected={selectedCharas}
                 onChange={setSelectedCharas}
-                filterBy={UMDatabaseUtils.charaTypeaheadMatcher}/>
+                filterBy={UMDatabaseUtils.charaTypeaheadMatcher} />
         </Form.Group>
 
         <Form.Group>
@@ -56,7 +57,7 @@ export default function SuccessionRelationsPage() {
                 checked={showRelationId}
                 onChange={(e) => setShowRelationId(e.target.checked)}
                 id="show-relation-id"
-                label="Show SuccessionRelationMember IDs"/>
+                label="Show SuccessionRelationMember IDs" />
         </Form.Group>
 
         {_.map(relationsGroups, (g, k) => renderRelationsGroups(g, k))}

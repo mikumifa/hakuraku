@@ -1,7 +1,7 @@
 import React from "react";
-import BootstrapTable, {ColumnDescription} from "react-bootstrap-table-next";
-import filterFactory, {textFilter} from "react-bootstrap-table2-filter";
-import {charaNameWithIdAndCast, Story, supportCardNameWithId} from "../data/UMDatabaseUtils";
+import BootstrapTable, { ColumnDescription } from "react-bootstrap-table-next";
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
+import { charaNameWithIdAndCast, Story, supportCardNameWithId } from "../data/UMDatabaseUtils";
 import UMDatabaseWrapper from "../data/UMDatabaseWrapper";
 
 
@@ -30,11 +30,11 @@ const columns: ColumnDescription<Story>[] = [
 export default function StoriesPage() {
     return <>
         <BootstrapTable bootstrap4 condensed hover
-                        classes="responsive-bootstrap-table"
-                        wrapperClasses="table-responsive"
-                        keyField="id"
-                        data={UMDatabaseWrapper.stories}
-                        columns={columns}
-                        filter={filterFactory()}/>
+            classes="responsive-bootstrap-table"
+            wrapperClasses="table-responsive"
+            keyField="id"
+            data={UMDatabaseWrapper.stories}
+            columns={columns}
+            filter={filterFactory()} />
     </>;
 }

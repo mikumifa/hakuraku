@@ -1,6 +1,6 @@
-import {JsonViewer} from "@textea/json-viewer";
+import { JsonViewer } from "@textea/json-viewer";
 import EChartsReactCore from "echarts-for-react/lib/core";
-import {LineChart, LineSeriesOption} from "echarts/charts";
+import { LineChart, LineSeriesOption } from "echarts/charts";
 import {
     DataZoomComponentOption,
     DataZoomSliderComponent,
@@ -16,16 +16,16 @@ import {
     TooltipComponentOption,
 } from "echarts/components";
 import * as echarts from "echarts/core";
-import {ComposeOption} from "echarts/core";
-import {SVGRenderer} from "echarts/renderers";
-import type {MarkArea2DDataItemOption} from "echarts/types/src/component/marker/MarkAreaModel";
-import type {MarkLine1DDataItemOption} from "echarts/types/src/component/marker/MarkLineModel";
+import { ComposeOption } from "echarts/core";
+import { SVGRenderer } from "echarts/renderers";
+import type { MarkArea2DDataItemOption } from "echarts/types/src/component/marker/MarkAreaModel";
+import type { MarkLine1DDataItemOption } from "echarts/types/src/component/marker/MarkLineModel";
 import _ from "lodash";
 import memoize from "memoize-one";
 import React from "react";
-import {Alert, Form, Table} from "react-bootstrap";
-import BootstrapTable, {ColumnDescription, ExpandRowProps} from "react-bootstrap-table-next";
-import {Chara} from "../data/data_pb";
+import { Alert, Form, Table } from "react-bootstrap";
+import BootstrapTable, { ColumnDescription, ExpandRowProps } from "react-bootstrap-table-next";
+import { Chara } from "../data/data_pb";
 import {
     RaceSimulateData,
     RaceSimulateEventData_SimulateEventType,
@@ -38,7 +38,7 @@ import {
     filterRaceEvents,
     getCharaActivatedSkillIds,
 } from "../data/RaceDataUtils";
-import {fromRaceHorseData, TrainedCharaData} from "../data/TrainedCharaData";
+import { fromRaceHorseData, TrainedCharaData } from "../data/TrainedCharaData";
 import * as UMDatabaseUtils from "../data/UMDatabaseUtils";
 import UMDatabaseWrapper from "../data/UMDatabaseWrapper";
 import CardNamePresenter from "./CardNamePresenter";
@@ -70,7 +70,7 @@ echarts.use([
     LineChart, TooltipComponent, GridComponent, MarkLineComponent, MarkAreaComponent, LegendComponent, SVGRenderer, DataZoomSliderComponent,
 ]);
 
-const competeTableColumns: ColumnDescription<CompeteTableData> [] = [
+const competeTableColumns: ColumnDescription<CompeteTableData>[] = [
     {
         dataField: 'time',
         text: 'Time',
@@ -83,7 +83,7 @@ const competeTableColumns: ColumnDescription<CompeteTableData> [] = [
         dataField: 'charas',
         text: '',
         formatter: (_, row) => <>
-            {row.charas.map(c => <>{c.displayName}<br/></>)}
+            {row.charas.map(c => <>{c.displayName}<br /></>)}
         </>,
     },
 ];
@@ -112,13 +112,13 @@ const runningStyleLabel = (horseResultData: RaceSimulateHorseResultData, activat
 };
 
 const otherRaceEventLabels = new Map([
-    [RaceSimulateEventData_SimulateEventType.COMPETE_TOP, '位置取り争い'],
-    [RaceSimulateEventData_SimulateEventType.COMPETE_FIGHT, '追い比べ'],
+    [RaceSimulateEventData_SimulateEventType.COMPETE_TOP, '位置争取'],
+    [RaceSimulateEventData_SimulateEventType.COMPETE_FIGHT, '追比'],
     [RaceSimulateEventData_SimulateEventType.RELEASE_CONSERVE_POWER, '脚色十分'],
-    [RaceSimulateEventData_SimulateEventType.STAMINA_LIMIT_BREAK_BUFF, 'スタミナ勝負'],
-    [RaceSimulateEventData_SimulateEventType.COMPETE_BEFORE_SPURT, '位置取り調整'],
-    [RaceSimulateEventData_SimulateEventType.STAMINA_KEEP, '持久力温存'],
-    [RaceSimulateEventData_SimulateEventType.SECURE_LEAD, 'リード確保'],
+    [RaceSimulateEventData_SimulateEventType.STAMINA_LIMIT_BREAK_BUFF, '比拼耐力'],
+    [RaceSimulateEventData_SimulateEventType.COMPETE_BEFORE_SPURT, '取位调整'],
+    [RaceSimulateEventData_SimulateEventType.STAMINA_KEEP, '耐力保存'],
+    [RaceSimulateEventData_SimulateEventType.SECURE_LEAD, '确保领先'],
 ]);
 
 const charaTableColumns: ColumnDescription<CharaTableData>[] = [
@@ -126,17 +126,17 @@ const charaTableColumns: ColumnDescription<CharaTableData>[] = [
         dataField: 'copy',
         isDummyField: true,
         text: '',
-        formatter: (cell, row) => <CopyButton content={JSON.stringify(row.trainedChara.rawData)}/>,
+        formatter: (cell, row) => <CopyButton content={JSON.stringify(row.trainedChara.rawData)} />,
     },
 
     {
         dataField: 'finishOrder',
-        text: '着',
+        text: '名次',
         sort: true,
     },
     {
         dataField: 'frameOrder',
-        text: '番',
+        text: '马号',
         sort: true,
     },
 
@@ -145,14 +145,14 @@ const charaTableColumns: ColumnDescription<CharaTableData>[] = [
         text: '',
         formatter: (chara: Chara | undefined, row) => chara ? <>
             {chara.id} - {chara.name}
-            <br/>({chara.castName}){' '}<CardNamePresenter cardId={row.trainedChara.cardId}/>
+            <br />({chara.castName}){' '}<CardNamePresenter cardId={row.trainedChara.cardId} />
         </> : unknownCharaTag,
     },
 
     {
         dataField: 'df1',
         isDummyField: true,
-        text: 'ト',
+        text: '训练者',
         formatter: (cell, row) => row.trainedChara.viewerId ? row.trainedChara.viewerName : '',
     },
     {
@@ -161,7 +161,7 @@ const charaTableColumns: ColumnDescription<CharaTableData>[] = [
         text: 'Time',
         formatter: (cell, row) => <>
             {UMDatabaseUtils.formatTime(row.horseResultData.finishTime!)}
-            <br/>{UMDatabaseUtils.formatTime(row.horseResultData.finishTimeRaw!)}
+            <br />{UMDatabaseUtils.formatTime(row.horseResultData.finishTimeRaw!)}
         </>,
     },
     {
@@ -170,52 +170,52 @@ const charaTableColumns: ColumnDescription<CharaTableData>[] = [
         text: '',
         formatter: (cell, row) => <>
             {runningStyleLabel(row.horseResultData, row.activatedSkills)}
-            <br/>{UMDatabaseUtils.motivationLabels[row.motivation]}
+            <br />{UMDatabaseUtils.motivationLabels[row.motivation]}
         </>,
     },
     {
         dataField: 'popularity',
-        text: '人気',
+        text: '人气',
         sort: true,
         formatter: (cell, row) => <>
-            {cell}<br/>{row.popularityMarks.map(UMDatabaseUtils.getPopularityMark).join(', ')}
+            {cell}<br />{row.popularityMarks.map(UMDatabaseUtils.getPopularityMark).join(', ')}
         </>,
     },
 
     {
         dataField: 'rankScore',
         isDummyField: true,
-        text: '評価点',
+        text: '评分',
         formatter: (cell, row) => row.trainedChara.rankScore,
     },
     {
         dataField: 'speed',
         isDummyField: true,
-        text: 'スピ',
+        text: '速度',
         formatter: (cell, row) => row.trainedChara.speed,
     },
     {
         dataField: 'stamina',
         isDummyField: true,
-        text: 'スタ',
+        text: '耐力',
         formatter: (cell, row) => row.trainedChara.stamina,
     },
     {
         dataField: 'pow',
         isDummyField: true,
-        text: 'パワ',
+        text: '力量',
         formatter: (cell, row) => row.trainedChara.pow,
     },
     {
         dataField: 'guts',
         isDummyField: true,
-        text: '根性',
+        text: '毅力',
         formatter: (cell, row) => row.trainedChara.guts,
     },
     {
         dataField: 'wiz',
         isDummyField: true,
-        text: '賢さ',
+        text: '智力',
         formatter: (cell, row) => row.trainedChara.wiz,
     },
 ];
@@ -224,16 +224,16 @@ const charaTableExpandRow: ExpandRowProps<CharaTableData> = {
     renderer: row => <div className="d-flex flex-row align-items-start">
         <Table size="small" className="w-auto m-2">
             <tbody>
-            {row.trainedChara.skills.map(cs =>
-                <tr>
-                    <td>{UMDatabaseWrapper.skillNameWithId(cs.skillId)}</td>
-                    <td>Lv {cs.level}</td>
-                    <td>{row.activatedSkills.has(cs.skillId) ? '発動' : ''}</td>
-                </tr>,
-            )}
+                {row.trainedChara.skills.map(cs =>
+                    <tr>
+                        <td>{UMDatabaseWrapper.skillNameWithId(cs.skillId)}</td>
+                        <td>Lv {cs.level}</td>
+                        <td>{row.activatedSkills.has(cs.skillId) ? '发动' : ''}</td>
+                    </tr>,
+                )}
             </tbody>
         </Table>
-        <CharaProperLabels chara={row.trainedChara}/>
+        <CharaProperLabels chara={row.trainedChara} />
     </div>,
     showExpandColumn: true,
 };
@@ -288,7 +288,7 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
         for (let frameOrder = 0; frameOrder < raceData.horseResult.length; frameOrder++) {
             // frameOrder is 0 ordered.
             const finishOrder = raceData.horseResult[frameOrder].finishOrder! + 1; // 1-indexed
-            m[frameOrder] = `[${frameOrder + 1} 番 ${finishOrder} 着]${nameFromRaceHorseInfo[frameOrder] ?? ''}`;
+            m[frameOrder] = `[${frameOrder + 1} 号 ${finishOrder} 名]${nameFromRaceHorseInfo[frameOrder] ?? ''}`;
         }
         return m;
     });
@@ -306,8 +306,8 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 return {
                     xAxis: event.frameTime,
                     name: UMDatabaseWrapper.skillName(event.param[1]),
-                    label: {show: true, position: 'insideStartBottom'},
-                    lineStyle: {color: '#666'},
+                    label: { show: true, position: 'insideStartBottom' },
+                    lineStyle: { color: '#666' },
                 } as MarkLine1DDataItemOption;
             });
 
@@ -316,8 +316,8 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 return {
                     xAxis: event.frameTime,
                     name: `${UMDatabaseWrapper.skillName(event.param[1])} by ${displayNames[event.param[0]]}`,
-                    label: {show: true, position: 'insideStartBottom'},
-                    lineStyle: {color: 'rgba(255, 0, 0, 0.6)'},
+                    label: { show: true, position: 'insideStartBottom' },
+                    lineStyle: { color: 'rgba(255, 0, 0, 0.6)' },
                 } as MarkLine1DDataItemOption;
             });
 
@@ -326,8 +326,8 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 return {
                     xAxis: event.frameTime,
                     name: name,
-                    label: {show: true, position: 'insideStartBottom'},
-                    lineStyle: {color: 'rgba(0, 255, 0, 0.6)'},
+                    label: { show: true, position: 'insideStartBottom' },
+                    lineStyle: { color: 'rgba(0, 255, 0, 0.6)' },
                 } as MarkLine1DDataItemOption;
             }));
 
@@ -339,7 +339,7 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 {
                     name: `Blocked by ${displayNames[blockedByIndex]}`,
                     xAxis: from,
-                    itemStyle: {color: 'rgba(255, 0, 0, 0.1)'},
+                    itemStyle: { color: 'rgba(255, 0, 0, 0.1)' },
                 },
                 {
                     xAxis: to,
@@ -352,7 +352,7 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 {
                     name: `Temptation ${RaceSimulateHorseFrameData_TemptationMode[mode] ?? mode}`,
                     xAxis: from,
-                    itemStyle: {color: 'rgba(255, 255, 0, 0.1)'},
+                    itemStyle: { color: 'rgba(255, 255, 0, 0.1)' },
                 },
                 {
                     xAxis: to,
@@ -474,10 +474,10 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 },
             ],
             yAxis: [
-                {type: "value"},
-                {gridIndex: 1, type: "value"},
+                { type: "value" },
+                { gridIndex: 1, type: "value" },
             ],
-            legend: {show: true},
+            legend: { show: true },
             series: [
                 {
                     name: "Speed",
@@ -493,7 +493,7 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                             position: "end",
                             formatter: "{b}",
                         },
-                        lineStyle: {type: "solid"},
+                        lineStyle: { type: "solid" },
                         data: [
                             ...(this.state.showSkills ? skillPlotLines : []),
                             ...(this.state.showTargetedSkills ? skillTargetedSkillPlotLines : []),
@@ -552,13 +552,13 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
         };
 
         return <div>
-            <EChartsReactCore echarts={echarts} option={options} style={{height: '700px'}}/>
+            <EChartsReactCore echarts={echarts} option={options} style={{ height: '700px' }} />
         </div>;
     }
 
     renderOtherRaceEventsList() {
         const groupedEvents = _.groupBy(this.props.raceData.event.map(e => e.event!)
-                .filter(e => otherRaceEventLabels.has(e.type!)),
+            .filter(e => otherRaceEventLabels.has(e.type!)),
             e => e.frameTime!);
 
         const d: CompeteTableData[] = _.values(groupedEvents).map(events => {
@@ -577,11 +577,11 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
 
         return <FoldCard header="Other Race Events">
             <BootstrapTable bootstrap4 condensed hover
-                            classes="responsive-bootstrap-table"
-                            wrapperClasses="table-responsive"
-                            data={d}
-                            columns={competeTableColumns}
-                            keyField="time"/>
+                classes="responsive-bootstrap-table"
+                wrapperClasses="table-responsive"
+                data={d}
+                columns={competeTableColumns}
+                keyField="time" />
         </FoldCard>;
     }
 
@@ -613,12 +613,12 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
             };
         });
 
-        return <FoldCard header="出馬表">
+        return <FoldCard header="出赛表">
             <BootstrapTable bootstrap4 condensed hover
-                            classes="responsive-bootstrap-table"
-                            wrapperClasses="table-responsive"
-                            expandRow={charaTableExpandRow}
-                            data={_.sortBy(l, d => d.finishOrder)} columns={charaTableColumns} keyField="frameOrder"/>
+                classes="responsive-bootstrap-table"
+                wrapperClasses="table-responsive"
+                expandRow={charaTableExpandRow}
+                data={_.sortBy(l, d => d.finishOrder)} columns={charaTableColumns} keyField="frameOrder" />
         </FoldCard>;
     }
 
@@ -656,8 +656,8 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 min: "dataMin",
                 max: "dataMax",
             },
-            yAxis: {type: "value"},
-            legend: {show: true, type: "scroll"},
+            yAxis: { type: "value" },
+            legend: { show: true, type: "scroll" },
             series: _.values(series),
             tooltip: {
                 trigger: 'axis',
@@ -670,10 +670,10 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
         return <FoldCard header="Distance Diff Graph">
             <Form.Switch
                 checked={this.state.diffGraphUseDistanceAsXAxis}
-                onChange={(e) => this.setState({diffGraphUseDistanceAsXAxis: e.target.checked})}
+                onChange={(e) => this.setState({ diffGraphUseDistanceAsXAxis: e.target.checked })}
                 id="diff-graph-use-distance-as-x-axis"
-                label="Use Base Distance as X Axis"/>
-            <EChartsReactCore echarts={echarts} option={options} style={{height: '400px'}}/>
+                label="Use Base Distance as X Axis" />
+            <EChartsReactCore echarts={echarts} option={options} style={{ height: '400px' }} />
         </FoldCard>;
     }
 
@@ -692,7 +692,7 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                 <Form.Group>
                     <Form.Label>Chara</Form.Label>
                     <Form.Control as="select" custom
-                                  onChange={(e) => this.setState({selectedCharaFrameOrder: e.target.value ? parseInt(e.target.value) : undefined})}>
+                        onChange={(e) => this.setState({ selectedCharaFrameOrder: e.target.value ? parseInt(e.target.value) : undefined })}>
                         <option value="">-</option>
                         {Object.entries(this.displayNames(this.props.raceHorseInfo, this.props.raceData))
                             .map(([frameOrder, displayName]) => {
@@ -701,34 +701,34 @@ class RaceDataPresenter extends React.PureComponent<RaceDataPresenterProps, Race
                     </Form.Control>
                     <Form.Switch
                         checked={this.state.showSkills}
-                        onChange={(e) => this.setState({showSkills: e.target.checked})}
+                        onChange={(e) => this.setState({ showSkills: e.target.checked })}
                         id="show-skills"
-                        label="Show Skills"/>
+                        label="Show Skills" />
                     <Form.Switch
                         checked={this.state.showTargetedSkills}
-                        onChange={(e) => this.setState({showTargetedSkills: e.target.checked})}
+                        onChange={(e) => this.setState({ showTargetedSkills: e.target.checked })}
                         id="show-targeted-skills"
-                        label="Show Targeted Skills"/>
+                        label="Show Targeted Skills" />
                     <Form.Switch
                         checked={this.state.showBlocks}
-                        onChange={(e) => this.setState({showBlocks: e.target.checked})}
+                        onChange={(e) => this.setState({ showBlocks: e.target.checked })}
                         id="show-blocks"
-                        label="Show Blocks"/>
+                        label="Show Blocks" />
                     <Form.Switch
                         checked={this.state.showTemptationMode}
-                        onChange={(e) => this.setState({showTemptationMode: e.target.checked})}
+                        onChange={(e) => this.setState({ showTemptationMode: e.target.checked })}
                         id="show-temptation-mode"
-                        label="Show Temptation Mode"/>
+                        label="Show Temptation Mode" />
                     <Form.Switch
                         checked={this.state.showOtherRaceEvents}
-                        onChange={(e) => this.setState({showOtherRaceEvents: e.target.checked})}
+                        onChange={(e) => this.setState({ showOtherRaceEvents: e.target.checked })}
                         id="show-competes"
-                        label={`Show Other Race Events (${Array.from(otherRaceEventLabels.values()).join(', ')})`}/>
+                        label={`Show Other Race Events (${Array.from(otherRaceEventLabels.values()).join(', ')})`} />
                 </Form.Group>
             </Form>
             {this.state.selectedCharaFrameOrder !== undefined && this.renderGraphs()}
-            <hr/>
-            <JsonViewer value={this.props.raceData.toJson()} defaultInspectDepth={1}/>
+            <hr />
+            <JsonViewer value={this.props.raceData.toJson()} defaultInspectDepth={1} />
         </div>;
     }
 }

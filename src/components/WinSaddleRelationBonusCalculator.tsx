@@ -1,8 +1,8 @@
 import memoize from "memoize-one";
 import React from "react";
-import {Badge, Button, Form, Modal} from "react-bootstrap";
-import {Typeahead} from "react-bootstrap-typeahead";
-import {RaceInstance, SpecialCaseRace_RacePermission, WinsSaddle, WinsSaddle_WinSaddleType} from "../data/data_pb";
+import { Badge, Button, Form, Modal } from "react-bootstrap";
+import { Typeahead } from "react-bootstrap-typeahead";
+import { RaceInstance, SpecialCaseRace_RacePermission, WinsSaddle, WinsSaddle_WinSaddleType } from "../data/data_pb";
 import * as UMDatabaseUtils from "../data/UMDatabaseUtils";
 import UMDatabaseWrapper from "../data/UMDatabaseWrapper";
 import FoldCard from "./FoldCard";
@@ -68,21 +68,21 @@ class WinSaddleRelationBonusCalculator extends React.PureComponent<{}, WinSaddle
         return <Form.Group>
             <Form.Label>{label} {renderWinSaddles(simulateGenerateWinSaddle(selectedRaces))}</Form.Label>
             <Typeahead labelKey={(race) => `${race.id} - ${race.name}`}
-                       multiple
-                       clearButton
-                       options={UMDatabaseWrapper.interestingRaceInstances}
-                       selected={selectedRaces}
-                       onChange={callback}/>
+                multiple
+                clearButton
+                options={UMDatabaseWrapper.interestingRaceInstances}
+                selected={selectedRaces}
+                onChange={callback} />
         </Form.Group>;
     }
 
     usagePresenter() {
         return <>
-            <Button variant="secondary" size="sm" onClick={() => this.setState({showUsage: true})}>
+            <Button variant="secondary" size="sm" onClick={() => this.setState({ showUsage: true })}>
                 Usage
             </Button>
 
-            <Modal show={this.state.showUsage} onHide={() => this.setState({showUsage: false})}>
+            <Modal show={this.state.showUsage} onHide={() => this.setState({ showUsage: false })}>
                 <Modal.Header closeButton>
                     <Modal.Title>Usage</Modal.Title>
                 </Modal.Header>
@@ -112,11 +112,11 @@ class WinSaddleRelationBonusCalculator extends React.PureComponent<{}, WinSaddle
 
     specialCaseRacePresenter() {
         return <>
-            <Button variant="warning" size="sm" onClick={() => this.setState({showSpecialCaseRaces: true})}>
+            <Button variant="warning" size="sm" onClick={() => this.setState({ showSpecialCaseRaces: true })}>
                 Special Case Races
             </Button>
 
-            <Modal show={this.state.showSpecialCaseRaces} onHide={() => this.setState({showSpecialCaseRaces: false})}>
+            <Modal show={this.state.showSpecialCaseRaces} onHide={() => this.setState({ showSpecialCaseRaces: false })}>
                 <Modal.Header closeButton>
                     <Modal.Title>Special Case Races</Modal.Title>
                 </Modal.Header>
@@ -124,13 +124,13 @@ class WinSaddleRelationBonusCalculator extends React.PureComponent<{}, WinSaddle
                     {UMDatabaseWrapper.umdb.specialCaseRace.map(specialCaseRace =>
                         <>
                             {UMDatabaseWrapper.raceInstanceNameWithId(specialCaseRace.raceInstanceId!)}
-                            <br/>
+                            <br />
                             ({SpecialCaseRace_RacePermission[specialCaseRace.racePermission!]})
-                            <br/>
+                            <br />
                             {specialCaseRace.charaId.map(i => <>
-                                {UMDatabaseUtils.charaNameWithIdAndCast(UMDatabaseWrapper.charas[i])}<br/>
+                                {UMDatabaseUtils.charaNameWithIdAndCast(UMDatabaseWrapper.charas[i])}<br />
                             </>)}
-                            <hr/>
+                            <hr />
                         </>,
                     )}
                     All other races should use the default instance.
@@ -147,11 +147,11 @@ class WinSaddleRelationBonusCalculator extends React.PureComponent<{}, WinSaddle
     }
 
     render() {
-        return <FoldCard header="勝鞍ボーナス Calculator">
+        return <FoldCard header="胜鞍ボーナス Calculator">
             {this.usagePresenter()}{" "}{this.specialCaseRacePresenter()}{" "}
             <Button variant="danger" size="sm" onClick={() => this.clearAll()}>Clear all</Button>
-            {this.raceSelection("Chara 1", this.state.chara1RaceInstances, s => this.setState({chara1RaceInstances: s}))}
-            {this.raceSelection("Chara 2", this.state.chara2RaceInstances, s => this.setState({chara2RaceInstances: s}))}
+            {this.raceSelection("Chara 1", this.state.chara1RaceInstances, s => this.setState({ chara1RaceInstances: s }))}
+            {this.raceSelection("Chara 2", this.state.chara2RaceInstances, s => this.setState({ chara2RaceInstances: s }))}
             {this.generateResult()}
         </FoldCard>;
     }

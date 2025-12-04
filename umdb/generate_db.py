@@ -38,9 +38,9 @@ def populate_cards(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
 
 
 def populate_support_cards(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
-    cursor.execute('''SELECT s.id, t.text, s.chara_id
+    cursor.execute("""SELECT s.id, t.text, s.chara_id
                       FROM support_card_data AS s
-                      JOIN text_data AS t ON t."index"=s.id AND t.category=75;''')
+                      JOIN text_data AS t ON t."index"=s.id AND t.category=75;""")
     rows = cursor.fetchall()
     for row in rows:
         c = data_pb2.SupportCard()
@@ -61,7 +61,9 @@ def populate_succession_relation(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor
         r.relation_point = row[1]
         relations[r.relation_type] = r
 
-    cursor.execute("SELECT id, relation_type, chara_id FROM succession_relation_member ORDER BY id;")
+    cursor.execute(
+        "SELECT id, relation_type, chara_id FROM succession_relation_member ORDER BY id;"
+    )
     rows = cursor.fetchall()
     for row in rows:
         member = data_pb2.SuccessionRelation.Member()
@@ -84,16 +86,19 @@ def populate_race_instance(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
         r.id = row[0]
         r.distance = row[1]
         r.ground_type = row[2]
-        r.name = row[3] or 'Unknown'
+        r.name = row[3] or "Unknown"
         pb.race_instance.append(r)
 
 
 def populate_wins_saddle(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
-    instance_id_columns = ', '.join(['s.race_instance_id_%d' % i for i in range(1, 9)])
-    cursor.execute('''SELECT s.id, t.text, s.priority, s.group_id, s.win_saddle_type, %s
+    instance_id_columns = ", ".join(["s.race_instance_id_%d" % i for i in range(1, 9)])
+    cursor.execute(
+        """SELECT s.id, t.text, s.priority, s.group_id, s.win_saddle_type, %s
                       FROM single_mode_wins_saddle AS s
                       JOIN text_data AS t
-                      ON t.category=111 AND s.id = t."index";''' % instance_id_columns)
+                      ON t.category=111 AND s.id = t."index";"""
+        % instance_id_columns
+    )
     rows = cursor.fetchall()
     for row in rows:
         w = data_pb2.WinsSaddle()
@@ -107,12 +112,12 @@ def populate_wins_saddle(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
 
 
 def populate_special_case_race(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
-    cursor.execute('''SELECT p1.race_instance_id, p1.program_group, p1.race_permission
+    cursor.execute("""SELECT p1.race_instance_id, p1.program_group, p1.race_permission
                       FROM single_mode_program AS p1
                       INNER JOIN single_mode_program AS p2
                       ON p1.base_program_id != 0 AND p2.base_program_id = 0
                          AND p1.base_program_id = p2.id
-                         AND p1.race_instance_id != p2.race_instance_id;''')
+                         AND p1.race_instance_id != p2.race_instance_id;""")
     rows = cursor.fetchall()
     races = []
     groups_to_query = set()
@@ -124,8 +129,11 @@ def populate_special_case_race(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
         races.append(race)
         groups_to_query.add(str(race.program_group))
 
-    cursor.execute('''SELECT chara_id, program_group FROM single_mode_chara_program
-                      WHERE program_group IN (%s);''' % ', '.join(groups_to_query))
+    cursor.execute(
+        """SELECT chara_id, program_group FROM single_mode_chara_program
+                      WHERE program_group IN (%s);"""
+        % ", ".join(groups_to_query)
+    )
     rows = cursor.fetchall()
     groups = defaultdict(list)
     for row in rows:
@@ -137,16 +145,16 @@ def populate_special_case_race(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
 
 
 def populate_skills(pb: data_pb2.UMDatabase, cursor: sqlite3.Cursor):
-    cursor.execute('''SELECT s.id, t.text, s.grade_value, s.tag_id
+    cursor.execute("""SELECT s.id, t.text, s.grade_value, s.tag_id
                       FROM skill_data AS s
-                      JOIN text_data AS t ON t."index"=s.id AND t.category=47;''')
+                      JOIN text_data AS t ON t."index"=s.id AND t.category=47;""")
     rows = cursor.fetchall()
     for row in rows:
         r = data_pb2.Skill()
         r.id = row[0]
         r.name = row[1]
         r.grade_value = row[2]
-        r.tag_id.extend(row[3].split('/'))
+        r.tag_id.extend(row[3].split("/"))
         pb.skill.append(r)
 
 
@@ -181,26 +189,28 @@ def main():
 
     cursor = open_db(args.db_path)
 
-    for p in (populate_charas,
-              populate_cards,
-              populate_support_cards,
-              populate_succession_relation,
-              populate_race_instance,
-              populate_wins_saddle,
-              populate_special_case_race,
-              populate_skills,
-              populate_team_stadium_score_bonus,
-              populate_stories):
+    for p in (
+        populate_charas,
+        populate_cards,
+        populate_support_cards,
+        populate_succession_relation,
+        populate_race_instance,
+        populate_wins_saddle,
+        populate_special_case_race,
+        populate_skills,
+        populate_team_stadium_score_bonus,
+        populate_stories,
+    ):
         p(pb, cursor)
 
     print(pb)
 
-    with open('../public/data/umdb.binarypb.gz', 'wb') as f:
+    with open("public/data/umdb.binarypb.gz", "wb") as f:
         f.write(gzip.compress(pb.SerializeToString(), mtime=0))
 
-    with open('../public/data/umdb.json', 'w') as f:
+    with open("public/data/umdb.json", "w", encoding="utf-8") as f:
         json.dump(json_format.MessageToDict(pb), f, ensure_ascii=False, indent=2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
